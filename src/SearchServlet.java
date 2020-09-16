@@ -18,28 +18,25 @@ public class SearchServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		HttpSession session = request.getSession();
-		Vector<Message> messagesList = (Vector<Message>) session.getAttribute("messagesList");
+//		HttpSession session = request.getSession();
+//		Vector<Message> messagesList = (Vector<Message>) session.getAttribute("messagesList");
+		
 		String name = request.getParameter("name");
 		String date = request.getParameter("date");
-		Integer count = messagesList.size();
+		
+//		Integer count = messagesList.size();
+		
+		Integer count = DB.getMessageDatabase().size();
 		String searchFilter = request.getParameterValues("search")[0];
 
 		response.setContentType("text/html");
@@ -54,7 +51,7 @@ public class SearchServlet extends HttpServlet {
 		out.print("<div class=\"d-flex flex-column p-2 justify-content-start align-items-center \">");
 
 		if (searchFilter.equals("Search Name")) {
-			for (Message item : messagesList) {
+			for (Message item : DB.getMessageDatabase()) {
 				System.out.println(item.getName());
 				if (item.getName().toLowerCase().contains(name.toLowerCase())) {
 					out.print("<div class=\"card m-2 \"  style=\"width:80%\">");
@@ -69,11 +66,11 @@ public class SearchServlet extends HttpServlet {
 				} 
 
 			}	
-			if(count==messagesList.size()) {
+			if(count==DB.getMessageDatabase().size()) {
 				out.print("<h1>Content Not Found</h1>");
 			}
 		} else {
-			for (Message item : messagesList) {
+			for(Message item:/*messagesList*/DB.getMessageDatabase()) {
 				if (dateFormat.format(item.getDate()).toString().equals(date)) {
 					out.print("<div class=\"card m-2 \"  style=\"width:80%\">");
 					out.print("<h5 class=\"card-header bg-dark text-white\">" + item.getName() + "</h5>");
@@ -85,7 +82,7 @@ public class SearchServlet extends HttpServlet {
 					count--;
 				} 
 			}
-			if(count==messagesList.size()) {
+			if(count==DB.getMessageDatabase().size()) {
 				out.print("<h1>Content Not Found</h1>");
 			}
 

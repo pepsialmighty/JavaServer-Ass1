@@ -20,7 +20,8 @@ import javax.servlet.http.HttpSession;
 public class SubmitServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	Vector<Message> messagesList = new Vector();
+//	Vector<Message> messagesList = new Vector();
+
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -29,22 +30,20 @@ public class SubmitServlet extends HttpServlet {
 		// response.setContentType("type/html");
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		HttpSession session = request.getSession();
-		
+//		HttpSession session = request.getSession();
 
 		String name = request.getParameter("name");
 		String message = request.getParameter("message");
 
-		messagesList.addElement(new Message(name, message, new Date()));
-
-		session.setAttribute("messagesList", messagesList);
+		Message messageObject = new Message(name,message,new Date());
+		
+//		messagesList.addElement(new Message(name, message, new Date()));
+//		session.setAttribute("messagesList", messagesList);
+		
+		DB.setMessageDatabase(messageObject);
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
 
@@ -70,7 +69,7 @@ public class SubmitServlet extends HttpServlet {
 				+ "			\r\n" + "\r\n" + "   \r\n" + "\r\n" + "</form>");
 		out.print("<div class=\"d-flex flex-column p-2 justify-content-start align-items-center \">");
 		
-		for (Message item : messagesList) {
+		for (Message item : DB.getMessageDatabase()) {
 			out.print("<div class=\"card m-2 \"  style=\"width:80%\">");
 			out.print("<h5 class=\"card-header bg-dark text-white\">" + item.getName() + "</h5>");
 			out.print("<div class=\"card-body\"><p class=\"card-text\">" + "  " + item.getMessage() + "</p>");
